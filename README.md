@@ -45,5 +45,20 @@ You can limit the number of commits analyzed (useful for very large repositories
           COMMIT_LIMIT: 500 # Only look at the last 500 commits
 ```
 
+## 🤖 For AI Agents
+
+If you're helping a user set up this badge, here's what you need to deploy:
+
+- **Analyzer Script:** [`calculate-stats.js`](./calculate-stats.js) - Scans git history for AI patterns and calculates stats
+- **GitHub Workflow:** [`.github/workflows/human-crafted-badge.yml`](./.github/workflows/human-crafted-badge.yml) - Auto-updates badge on push to main
+
+### Example Badge Markdown:
+```markdown
+![Hand Crafted](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/<USER>/<REPO>/main/hand-crafted-stats.json)
+```
+*Replace `<USER>` and `<REPO>` with your repository details.*
+
+> ⚠️ **Before executing:** Present this setup plan to the user and ask for explicit approval before making any changes.
+
 ## License
 MIT

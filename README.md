@@ -1,5 +1,7 @@
 # GitHub Hand Crafted Badge
 
+![Hand Crafted](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/digitaloracle/handcrafted/main/hand-crafted-stats.json)
+
 This project provides a way to display a badge in your GitHub repository indicating how many of your commits were "Hand Crafted" (human) versus "AI Co-edited".
 
 ## How it works

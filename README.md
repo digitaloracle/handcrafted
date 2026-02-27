@@ -49,16 +49,27 @@ You can limit the number of commits analyzed (useful for very large repositories
 
 If you're helping a user set up this badge, here's what you need to deploy:
 
-- **Analyzer Script:** [`calculate-stats.js`](./calculate-stats.js) - Scans git history for AI patterns and calculates stats
-- **GitHub Workflow:** [`.github/workflows/human-crafted-badge.yml`](./.github/workflows/human-crafted-badge.yml) - Auto-updates badge on push to main
+### Required Files
 
-### Example Badge Markdown:
+**1. Analyzer Script:** [`calculate-stats.js`](./calculate-stats.js)
+- Purpose: Scans git history for AI patterns (Copilot, Cursor, Gemini, Claude, etc.)
+- Location: Repository root
+
+**2. GitHub Action Workflow:** [`.github/workflows/human-crafted-badge.yml`](./.github/workflows/human-crafted-badge.yml)
+- Purpose: Auto-updates badge on push to main branch
+- **IMPORTANT:** Create `.github/workflows/` directory first if it doesn't exist
+- Location: `.github/workflows/human-crafted-badge.yml`
+
+**3. Output File (auto-generated):** `hand-crafted-stats.json`
+- Created by the script, used by Shields.io for badge display
+
+### Example Badge Markdown to Add to README:
 ```markdown
 ![Hand Crafted](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/<USER>/<REPO>/main/hand-crafted-stats.json)
 ```
-*Replace `<USER>` and `<REPO>` with your repository details.*
+*Replace `<USER>` and `<REPO>` with repository details.*
 
-> ⚠️ **Before executing:** Present this setup plan to the user and ask for explicit approval before making any changes.
+> ⚠️ **Before executing:** Present this setup plan to the user and ask for explicit approval before making any changes. Confirm that you will create all three components above.
 
 ## License
 MIT

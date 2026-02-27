@@ -14,3 +14,4 @@
 ## 📈 Analytics
 - [ ] **Trend Analysis**: Track the human-vs-AI ratio over time and provide a sparkline or history graph.
 - [ ] **Contributor Breakdown**: Show the AI assistance ratio per contributor to help teams understand how different members are utilizing AI tools.
+- [x] **For AI Agents**: Add agent-friendly instructions with deeplinks

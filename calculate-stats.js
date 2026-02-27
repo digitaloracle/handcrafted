@@ -14,7 +14,17 @@ const AI_PATTERNS = [
   /\(aider\)/i,
   /\[aider\]/i,
   /Gemini/i,
-  /AI-Assistant: Gemini/i
+  /AI-Assistant: Gemini/i,
+  /Claude/i,
+  /Co-authored-by: Claude <noreply@anthropic\.com>/i,
+  /Generated with .*Claude Code/i,
+  /Codex/i,
+  /Amazon Q/i,
+  /amazon-q-developer\[bot\]/i,
+  /Codeium/i,
+  /Tabnine/i,
+  /Assisted-by:/i,
+  /AI-Model:/i
 ];
 
 function getCommits() {

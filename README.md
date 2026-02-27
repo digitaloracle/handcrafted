@@ -25,13 +25,14 @@ This project provides a way to display a badge in your GitHub repository indicat
 ## Supported AI Detection Patterns
 
 - `Co-authored-by: GitHub Copilot <noreply@github.com>`
+- `Co-authored-by: Claude <noreply@anthropic.com>`
 - `Co-authored-by: cursor-ai <sos@cursor.sh>`
-- `Co-authored-by: Cursor <sos@cursor.sh>`
-- `AI-Assistant: ...` (Windsurf/Cascade/Gemini)
-- `Generated-by: ...`
+- `AI-Assistant: ...` (Windsurf/Cascade/Gemini/Claude)
+- `Generated-by: ...` or `Generated with Claude Code`
 - `AI-Generated: true`
-- `Gemini` or `Gemini-CLI`
-- Generic AI co-authorship patterns
+- `Gemini`, `Claude`, `Codex`, `Amazon Q`, `Codeium`, `Tabnine`
+- `Assisted-by: ...` or `AI-Model: ...`
+- Generic AI co-authorship patterns (`*ai*@*`)
 
 ## Optional Configuration
 

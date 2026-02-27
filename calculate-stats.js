@@ -12,7 +12,9 @@ const AI_PATTERNS = [
   /\[ai-commit\]/i,
   /aider:/i,
   /\(aider\)/i,
-  /\[aider\]/i
+  /\[aider\]/i,
+  /Gemini/i,
+  /AI-Assistant: Gemini/i
 ];
 
 function getCommits() {

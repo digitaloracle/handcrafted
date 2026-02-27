@@ -27,9 +27,10 @@ This project provides a way to display a badge in your GitHub repository indicat
 - `Co-authored-by: GitHub Copilot <noreply@github.com>`
 - `Co-authored-by: cursor-ai <sos@cursor.sh>`
 - `Co-authored-by: Cursor <sos@cursor.sh>`
-- `AI-Assistant: ...` (Windsurf/Cascade)
+- `AI-Assistant: ...` (Windsurf/Cascade/Gemini)
 - `Generated-by: ...`
 - `AI-Generated: true`
+- `Gemini` or `Gemini-CLI`
 - Generic AI co-authorship patterns
 
 ## Optional Configuration

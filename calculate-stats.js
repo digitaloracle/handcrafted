@@ -66,5 +66,4 @@ const shieldsData = {
 };
 
 fs.writeFileSync('hand-crafted-stats.json', JSON.stringify(shieldsData, null, 2));
-console.log('
-Saved stats to hand-crafted-stats.json');
+console.log('\nSaved stats to hand-crafted-stats.json');

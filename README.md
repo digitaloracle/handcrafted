@@ -4,7 +4,13 @@
 
 ![Hand Crafted](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/digitaloracle/handcrafted/main/hand-crafted-stats.json)
 
-This project provides a way to display a badge in your GitHub repository indicating how many of your commits were "Hand Crafted" (human) versus "AI Co-edited".
+## The idea
+
+Before the industrial revolution, almost everything was handcrafted. Clothes were sewn by tailors, shoes were cobbled by hand, furniture was carved by craftsmen. Then machines arrived — faster, cheaper, more consistent — and handmade goods became the exception rather than the rule. Manufacturers began labelling their products *"hand crafted"* precisely because it had become rare enough to be worth saying.
+
+We are living through a similar shift in software. AI coding tools are becoming capable enough that a growing share of commits, diffs, and entire features are written or heavily shaped by a model rather than a person. Like the industrial revolution before it, this changes what "made by hand" means — and makes it worth marking when it's true.
+
+This badge is that label for your repository. A way to say: *these commits were written by a human.*
 
 ## How it works
 

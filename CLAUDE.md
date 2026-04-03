@@ -21,26 +21,33 @@ Output is written to `hand-crafted-stats.json`.
 
 ## Architecture
 
-The project has two core components:
+The project has three core components:
 
 1. **`calculate-stats.js`** — A Node.js script that:
    - Runs `git log` with a special delimiter to extract all commit messages
    - Tests each message against `AI_PATTERNS` (array of regexes)
-   - Computes human percentage and writes a Shields.io-schema JSON to `hand-crafted-stats.json`
+   - Computes human percentage and writes a Shields.io-schema JSON (path controlled by `OUTPUT_FILE` env var, defaults to `hand-crafted-stats.json`)
+   - Appends `human-percentage`, `total-commits`, `ai-commits` to `$GITHUB_OUTPUT` when that env var is set (no-op locally)
 
-2. **`.github/workflows/human-crafted-badge.yml`** — GitHub Actions workflow that:
+2. **`action.yml`** — Composite GitHub Action at the repo root that:
+   - Accepts `commit-limit`, `auto-commit`, and `output-file` inputs
+   - Runs `calculate-stats.js` via `${{ github.action_path }}` (works for both `uses: ./` and `uses: digitaloracle/handcrafted@v1`)
+   - Optionally commits and pushes the updated JSON
+   - Exposes `human-percentage`, `total-commits`, `ai-commits` as outputs
+
+3. **`.github/workflows/human-crafted-badge.yml`** — GitHub Actions workflow that:
    - Triggers on push to `main` or manual dispatch
-   - Runs `calculate-stats.js` with `fetch-depth: 0` (full history required)
-   - Commits the updated `hand-crafted-stats.json` back to the repo
+   - Uses `uses: ./` to invoke the action defined in this repo
 
 The badge is served via Shields.io's endpoint feature, pointing at the raw `hand-crafted-stats.json` in the repo.
 
 ## Deploying to Another Repository
 
-When helping a user set up this badge in their repo, three things are needed:
-1. Copy `calculate-stats.js` to the target repo root
-2. Create `.github/workflows/human-crafted-badge.yml` in the target repo
-3. Add the badge markdown to their README, replacing `<USER>` and `<REPO>`
+When helping a user set up this badge in their repo, two things are needed:
+1. Create `.github/workflows/human-crafted-badge.yml` in the target repo (referencing `uses: digitaloracle/handcrafted@v1`)
+2. Add the badge markdown to their README, replacing `<USER>` and `<REPO>`
+
+**Do NOT copy `calculate-stats.js`** — it is bundled inside the action and invoked via `${{ github.action_path }}`.
 
 **Always present the plan and get explicit user approval before making changes to their repo.**
 

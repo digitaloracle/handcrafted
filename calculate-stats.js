@@ -77,5 +77,15 @@ const shieldsData = {
   color: stats.humanPercentage > 80 ? 'green' : stats.humanPercentage > 50 ? 'yellow' : 'orange'
 };
 
-fs.writeFileSync('hand-crafted-stats.json', JSON.stringify(shieldsData, null, 2));
-console.log('\nSaved stats to hand-crafted-stats.json');
+const outputFile = process.env.OUTPUT_FILE || 'hand-crafted-stats.json';
+fs.writeFileSync(outputFile, JSON.stringify(shieldsData, null, 2));
+console.log(`\nSaved stats to ${outputFile}`);
+
+if (process.env.GITHUB_OUTPUT) {
+  const outputLines = [
+    `human-percentage=${stats.humanPercentage}`,
+    `total-commits=${stats.total}`,
+    `ai-commits=${stats.ai}`
+  ].join('\n');
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, outputLines + '\n');
+}

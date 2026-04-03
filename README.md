@@ -46,15 +46,23 @@ That's it. No scripts to copy.
 
 ## Supported AI Detection Patterns
 
-- `Co-authored-by: GitHub Copilot <noreply@github.com>`
-- `Co-authored-by: Claude <noreply@anthropic.com>`
-- `Co-authored-by: cursor-ai <sos@cursor.sh>`
-- `AI-Assistant: ...` (Windsurf/Cascade/Gemini/Claude)
-- `Generated-by: ...` or `Generated with Claude Code`
-- `AI-Generated: true`
-- `Gemini`, `Claude`, `Codex`, `Amazon Q`, `Codeium`, `Tabnine`
-- `Assisted-by: ...` or `AI-Model: ...`
-- Generic AI co-authorship patterns (`*ai*@*`)
+Tools that automatically inject markers into commits:
+
+| Tool | Detected markers |
+|---|---|
+| **Claude Code** | `Co-Authored-By: Claude ...` · `Generated with Claude Code` |
+| **Cursor** | `Co-authored-by: Cursor <cursoragent@cursor.com>` · `Made-with: Cursor` (+ legacy `sos@cursor.sh`) |
+| **Aider** | `Co-authored-by: aider ... <noreply@aider.chat>` · `(aider)` author suffix · `aider:` message prefix |
+| **Copilot Cloud Agent** | `copilot-swe-agent[bot]` author · `Agent-Logs-Url:` trailer |
+| **Devin** | `devin-ai-integration[bot]` author |
+| **OpenHands** | `Co-authored-by: openhands` · `openhands@all-hands.dev` |
+| **Gemini Code Assist** | `gemini-code-assist[bot]` author |
+| **Codex Web/Cloud** | `chatgpt-codex-connector[bot]` author |
+| **Amazon Q** | `amazon-q-developer[bot]` author |
+
+Community/org attribution standards also detected: `Assisted-by:`, `Generated-by:`, `AI-Assisted-By:`, `AI-Tool:`, `AI-Model:`, `AI-Generated: true`, and generic `*ai*@*` co-author emails.
+
+> **Note:** IDE-integrated assistants (Copilot inline, JetBrains AI, Tabnine, Codeium/Windsurf, Cody) inject no commit-level markers and are undetectable at the git level. Absence of a marker does not mean a commit is human-only.
 
 ## Optional Configuration
 

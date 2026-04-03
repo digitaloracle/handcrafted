@@ -1,6 +1,6 @@
 # GitHub Hand Crafted Badge
 
-![Logo](./logo.png)
+<img src="./logo.png" width="200" alt="Hand Crafted logo" />
 
 ![Hand Crafted](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/digitaloracle/handcrafted/main/hand-crafted-stats.json)
 

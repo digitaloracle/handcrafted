@@ -2,29 +2,57 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 
 const AI_PATTERNS = [
-  /Co-authored-by: GitHub Copilot <noreply@github\.com>/i,
+  // Claude Code — co-author trailer (covers model-specific variants like "Claude Sonnet 4.5")
+  /Co-Authored-By: Claude/i,
+  // Claude Code — body text (covers plain and emoji/markdown link variants)
+  /Generated with Claude Code/i,
+
+  // Cursor — new email (cursoragent@cursor.com, added ~Jan 2026)
+  /Co-authored-by: Cursor <cursoragent@cursor\.com>/i,
+  // Cursor — legacy email
   /Co-authored-by: cursor-ai <sos@cursor\.sh>/i,
   /Co-authored-by: Cursor <sos@cursor\.sh>/i,
-  /AI-Assistant:/i,
+  // Cursor — second custom trailer injected alongside co-author
+  /Made-with: Cursor/i,
+
+  // Aider — co-author trailer with noreply@aider.chat email
+  /Co-authored-by: aider.*<noreply@aider\.chat>/i,
+  // Aider — author/committer name suffix "(aider)" and commit message prefix "aider:"
+  /\(aider\)/i,
+  /aider:/i,
+
+  // GitHub Copilot Cloud Agent — commits as bot author, adds Agent-Logs-Url trailer
+  /copilot-swe-agent\[bot\]/i,
+  /Agent-Logs-Url:/i,
+
+  // Devin — GitHub App bot identity
+  /devin-ai-integration\[bot\]/i,
+
+  // OpenHands (formerly OpenDevin)
+  /Co-authored-by: openhands/i,
+  /openhands@all-hands\.dev/i,
+
+  // Gemini Code Assist — GitHub App bot (PR suggestions)
+  /gemini-code-assist\[bot\]/i,
+
+  // Codex Web/Cloud (ChatGPT Codex connector bot)
+  /chatgpt-codex-connector\[bot\]/i,
+
+  // Amazon Q — GitHub App bot identity
+  /amazon-q-developer\[bot\]/i,
+
+  // Community/org attribution standards
+  /Assisted-by:/i,
   /Generated-by:/i,
+  /AI-Assisted-By:/i,
   /AI-Generated: true/i,
+  /AI-Assistant:/i,
+  /AI-Tool:/i,
+  /AI-Model:/i,
+
+  // Generic AI co-author email catch-all
   /Co-authored-by: .*<.*ai.*@.*>/i,
   /\[ai-commit\]/i,
-  /aider:/i,
-  /\(aider\)/i,
-  /\[aider\]/i,
-  /Gemini/i,
-  /AI-Assistant: Gemini/i,
-  /Claude/i,
-  /Co-authored-by: Claude <noreply@anthropic\.com>/i,
-  /Generated with .*Claude Code/i,
-  /Codex/i,
-  /Amazon Q/i,
-  /amazon-q-developer\[bot\]/i,
-  /Codeium/i,
-  /Tabnine/i,
-  /Assisted-by:/i,
-  /AI-Model:/i
 ];
 
 function getCommits() {
@@ -77,5 +105,15 @@ const shieldsData = {
   color: stats.humanPercentage > 80 ? 'green' : stats.humanPercentage > 50 ? 'yellow' : 'orange'
 };
 
-fs.writeFileSync('hand-crafted-stats.json', JSON.stringify(shieldsData, null, 2));
-console.log('\nSaved stats to hand-crafted-stats.json');
+const outputFile = process.env.OUTPUT_FILE || 'hand-crafted-stats.json';
+fs.writeFileSync(outputFile, JSON.stringify(shieldsData, null, 2));
+console.log(`\nSaved stats to ${outputFile}`);
+
+if (process.env.GITHUB_OUTPUT) {
+  const outputLines = [
+    `human-percentage=${stats.humanPercentage}`,
+    `total-commits=${stats.total}`,
+    `ai-commits=${stats.ai}`
+  ].join('\n');
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, outputLines + '\n');
+}

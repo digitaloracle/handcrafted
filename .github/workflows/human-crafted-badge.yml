@@ -19,20 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Important for full git history
+          fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Update Badge
+        uses: ./
         with:
-          node-version: '20'
-
-      - name: Calculate Stats
-        run: node calculate-stats.js
-
-      - name: Commit and Push
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add hand-crafted-stats.json
-          git commit -m "docs: update hand-crafted stats [skip ci]" || echo "No changes to commit"
-          git push origin HEAD:main
+          auto-commit: 'true'

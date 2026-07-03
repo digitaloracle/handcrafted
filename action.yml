@@ -1,38 +1,38 @@
-name: 'Hand Crafted Badge'
-description: 'Calculates the percentage of human-authored commits and updates a Shields.io badge file'
+name: "Hand Crafted Badge"
+description: "Calculates the percentage of human-authored commits and updates a Shields.io badge file"
 
 inputs:
   commit-limit:
-    description: 'Maximum number of commits to analyze (empty = all commits)'
+    description: "Maximum number of commits to analyze (empty = all commits)"
     required: false
-    default: ''
+    default: ""
   auto-commit:
-    description: 'Whether to commit and push the updated badge JSON file'
+    description: "Whether to commit and push the updated badge JSON file"
     required: false
-    default: 'true'
+    default: "true"
   output-file:
-    description: 'Filename to write the Shields.io JSON badge to'
+    description: "Filename to write the Shields.io JSON badge to"
     required: false
-    default: 'hand-crafted-stats.json'
+    default: "hand-crafted-stats.json"
 
 outputs:
   human-percentage:
-    description: 'Percentage of commits that are human-authored'
+    description: "Percentage of commits that are human-authored"
     value: ${{ steps.calculate.outputs.human-percentage }}
   total-commits:
-    description: 'Total number of commits analyzed'
+    description: "Total number of commits analyzed"
     value: ${{ steps.calculate.outputs.total-commits }}
   ai-commits:
-    description: 'Number of commits identified as AI-assisted'
+    description: "Number of commits identified as AI-assisted"
     value: ${{ steps.calculate.outputs.ai-commits }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: "20"
 
     - name: Calculate Stats
       id: calculate
@@ -50,4 +50,4 @@ runs:
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add "${{ inputs.output-file }}"
         git commit -m "docs: update hand-crafted stats [skip ci]" || echo "No changes to commit"
-        git push origin HEAD:${{ github.ref_name }}
+        git push origin HEAD:${{ github.ref }}

@@ -1,5 +1,5 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
+const { execSync } = require("child_process");
+const fs = require("fs");
 
 const AI_PATTERNS = [
   // Claude Code — co-author trailer (covers model-specific variants like "Claude Sonnet 4.5")
@@ -22,7 +22,7 @@ const AI_PATTERNS = [
   /aider:/i,
 
   // GitHub Copilot Cloud Agent — commits as bot author, adds Agent-Logs-Url trailer
-  /copilot-swe-agent\[bot\]/i,
+  /\bcopilot-swe-agent\[bot\]/i,
   /Agent-Logs-Url:/i,
 
   // Devin — GitHub App bot identity
@@ -34,6 +34,14 @@ const AI_PATTERNS = [
 
   // Gemini Code Assist — GitHub App bot (PR suggestions)
   /gemini-code-assist\[bot\]/i,
+  // Gemini CLI co-author
+  /Co-authored-by: .*<.*gemini@google\.com>/i,
+
+  // Cody co-author
+  /Co-authored-by: .*<.*cody@sourcegraph\.com>/i,
+
+  // Continue co-author
+  /Co-authored-by: .*<.*continue@continue\.dev>/i,
 
   // Codex Web/Cloud (ChatGPT Codex connector bot)
   /chatgpt-codex-connector\[bot\]/i,
@@ -51,18 +59,31 @@ const AI_PATTERNS = [
   /AI-Model:/i,
 
   // Generic AI co-author email catch-all
-  /Co-authored-by: .*<.*ai.*@.*>/i,
+  /Co-authored-by: .*<.*\bai\b.*@.*>/i,
   /\[ai-commit\]/i,
 ];
 
 function getCommits() {
   try {
-    const limit = process.env.COMMIT_LIMIT ? `-n ${process.env.COMMIT_LIMIT}` : '';
-    // Get all commit messages, separated by a special delimiter
-    const output = execSync(`git log ${limit} --format="%B%n---COMMIT-END---" --no-merges`).toString();
-    return output.split('---COMMIT-END---').map(s => s.trim()).filter(Boolean);
+    const limit = process.env.COMMIT_LIMIT
+      ? `-n ${process.env.COMMIT_LIMIT}`
+      : "";
+    // Get all commit messages, separated by a null byte; each block starts with short hash
+    const output = execSync(
+      `git log ${limit} --format="%h%x00%B%x00" --no-merges`,
+    ).toString();
+    const parts = output.split("\0");
+    const commits = [];
+    for (let i = 0; i < parts.length - 1; i += 2) {
+      const hash = parts[i].trim();
+      const body = parts[i + 1].trim();
+      if (hash) {
+        commits.push({ hash, body });
+      }
+    }
+    return commits;
   } catch (error) {
-    console.error('Error reading git log:', error.message);
+    console.error("Error reading git log:", error.message);
     process.exit(1);
   }
 }
@@ -70,29 +91,38 @@ function getCommits() {
 function analyzeCommits(commits) {
   let aiCount = 0;
   let totalCount = commits.length;
+  const debug = process.env.DEBUG === "true";
 
-  commits.forEach(msg => {
-    const isAI = AI_PATTERNS.some(pattern => pattern.test(msg));
-    if (isAI) {
+  commits.forEach((commit) => {
+    const matchingPattern = AI_PATTERNS.find((pattern) =>
+      pattern.test(commit.body),
+    );
+    if (matchingPattern) {
       aiCount++;
+      if (debug) {
+        console.log(
+          `[DEBUG] AI commit ${commit.hash}: matched ${matchingPattern}`,
+        );
+      }
     }
   });
 
   const humanCount = totalCount - aiCount;
-  const humanPercentage = totalCount > 0 ? Math.round((humanCount / totalCount) * 100) : 100;
+  const humanPercentage =
+    totalCount > 0 ? Math.round((humanCount / totalCount) * 100) : 100;
 
   return {
     total: totalCount,
     ai: aiCount,
     human: humanCount,
-    humanPercentage: humanPercentage
+    humanPercentage: humanPercentage,
   };
 }
 
 const commits = getCommits();
 const stats = analyzeCommits(commits);
 
-console.log('--- Stats ---');
+console.log("--- Stats ---");
 console.log(`Total Commits: ${stats.total}`);
 console.log(`Hand Crafted: ${stats.human} (${stats.humanPercentage}%)`);
 console.log(`AI Co-edited: ${stats.ai}`);
@@ -100,12 +130,19 @@ console.log(`AI Co-edited: ${stats.ai}`);
 // Save to a JSON for Shields.io or Action consumption
 const shieldsData = {
   schemaVersion: 1,
-  label: 'hand crafted',
+  label: "hand crafted",
   message: `${stats.humanPercentage}%`,
-  color: stats.humanPercentage > 80 ? 'green' : stats.humanPercentage > 50 ? 'yellow' : 'orange'
+  color:
+    stats.humanPercentage > 80
+      ? "green"
+      : stats.humanPercentage > 50
+        ? "yellow"
+        : stats.humanPercentage > 20
+          ? "orange"
+          : "red",
 };
 
-const outputFile = process.env.OUTPUT_FILE || 'hand-crafted-stats.json';
+const outputFile = process.env.OUTPUT_FILE || "hand-crafted-stats.json";
 fs.writeFileSync(outputFile, JSON.stringify(shieldsData, null, 2));
 console.log(`\nSaved stats to ${outputFile}`);
 
@@ -113,7 +150,7 @@ if (process.env.GITHUB_OUTPUT) {
   const outputLines = [
     `human-percentage=${stats.humanPercentage}`,
     `total-commits=${stats.total}`,
-    `ai-commits=${stats.ai}`
-  ].join('\n');
-  fs.appendFileSync(process.env.GITHUB_OUTPUT, outputLines + '\n');
+    `ai-commits=${stats.ai}`,
+  ].join("\n");
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, outputLines + "\n");
 }

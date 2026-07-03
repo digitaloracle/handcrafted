@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# prepare-commit-msg hook for self-declaring AI-generated commits.
+#
+# Usage:
+#   Set AI_COMMIT=1 when committing to mark the commit as AI-generated:
+#     AI_COMMIT=1 git commit -m "feat: add new widget"
+#
+#   Optionally provide a custom value via AI_COMMIT_MESSAGE:
+#     AI_COMMIT_MESSAGE="Claude Code" AI_COMMIT=1 git commit -m "refactor: simplify loop"
+#
+# Installation (from repo root):
+#   ln -s ../../hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
+#
+# This hook appends an "AI-Generated" trailer to the commit message
+# so that badge tools (e.g., digitaloracle/handcrafted) can classify
+# the commit accurately.
+
+COMMIT_MSG_FILE="$1"
+
+if [ "${AI_COMMIT}" = "1" ]; then
+    if [ -n "${AI_COMMIT_MESSAGE}" ]; then
+        echo "AI-Generated: ${AI_COMMIT_MESSAGE}" >> "${COMMIT_MSG_FILE}"
+    else
+        echo "AI-Generated: true" >> "${COMMIT_MSG_FILE}"
+    fi
+fi
